@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket  = "eickhoff-tf-backend"
-    key     = "staging/state/staging.tfstate"
+    key     = "sandbox/state/sandbox.tfstate"
     region  = "us-east-1"
     encrypt = true
   }
