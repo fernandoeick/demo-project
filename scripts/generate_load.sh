@@ -1,0 +1,1 @@
+while true; do curl http://demo-app-service:80; done

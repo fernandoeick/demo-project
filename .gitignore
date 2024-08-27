@@ -1,0 +1,31 @@
+#  Local .terraform directories
+**/.terraform/*
+**/.terragrunt-cache/*
+
+# .tfstate files
+*.tfstate
+*.plan
+*.tfstate.*
+
+# .tfvars files
+*.tfvars
+!common/*.tfvars
+
+# created by tf wrapper script
+backend.tf
+
+# created by eks module
+addons
+kubeconfig_*
+config-map-aws-auth*
+filebeat.yaml
+/.project
+
+#logs
+*.log
+
+.DS_Store
+.vscode
+.atom
+
+.envrc

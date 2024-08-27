@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY = 'docker.io'
+        DOCKER_IMAGE = 'demo-app-img'
+        DOCKER_TAG = 'latest'
+        KUBECONFIG = credentials('kubeconfig-id')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withDockerRegistry([credentialsId: 'docker-registry-credentials', url: "${DOCKER_REGISTRY}"]) {
+                        sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    }
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh """
+                        kubectl set image deployment/demo-app demo-app=${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG} --record
+                        kubectl rollout status deployment/demo-app
+                    """
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Build and deployment completed successfully.'
+        }
+        failure {
+            echo 'Build or deployment failed.'
+        }
+    }
+}
