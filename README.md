@@ -2,39 +2,49 @@
 
 This repository is composed by the following components:
 
-## Docker
-Creates a containerized application. `demo-app` is just a webpage composed by a single html file. The html webpage is deployed in a container created from the `nginx` base image and it is exposed to the port 80. The `Jenkinsfile` creates the pipeline that will be building the docker image, pushing it to the docker registry and then deploys it to the kubernetes deployment.
+## The App Folder
+Creates a containerized docker application. The `demo-app` is just a web page composed of a single HTML file. The html webpage is deployed in a container made from the nginx base image and exposed to port 80. 
+The Jenkinsfile available in the app folder, creates a pipeline that will provide all the needed stages to build the docker image, to push it to the proper docker registry, and then to deploy it to the Kubernetes cluster.
 
-## k8s
-Creates a minimal kubernetes cluster resources. It provided a deployment, ready to get the docker image pushed to the docker registry. The deployment is setting the replicaset set to the value 3. This k8s components folder are also providing the pod and the service, that will expose the nginx service.
-Complementar to that, we are providing the installation of the metrics server and and hpa to provide pods auto scalation using the cpu metric.
+## The K8s Resources
+Available in the `k8s` folder, it creates the minimal Kubernetes cluster resources. It provides a deployment, which is ready to get the docker image previously pushed to the docker registry. The ReplicaSet is also created as well as a service, which will expose the nginx running the web application.
+Complementary to that, we are providing the installation of the metrics-server and hpa to provide auto scalation of the pods, using the CPU metric.
 
-## Terraform
-Provision in the aws the minimal needed resources to create an eks cluster. Terraform is creating: 1 vpc, 1 private subnet, 2 public subnets, the route tables and the associations and the eks cluster. The eks cluster is being provisioned using the version `1.30` and it will create 2 nodes minimun and 2 nodes max.
-The terraform backend is a S3 bucket.
+## The Terraform Components
+Using Terragrunt to create an abstraction, it will provision in the `aws` the minimal resources needed to create an `eks` cluster. The Terraform available is creating the following resources: `vpc`, `a private subnet`, `public subnets`in two different availability zones, the `route tables`, the `route tables associations` and the `eks` cluster.
+The eks cluster is provisioned using the version `1.30` and the cluster will be composed by `2 nodes min` and `3 nodes max`.
+Terraform backend is using a S3 bucket.
 
-## Script
-Contains some useful scripts:
+## The Scripts
+The `scripts` folder contains some useful scripts:
+- `build_and_deploy_image.sh`: this script will build the docker image and then will push the docker image to the remote registry
 - `build_and_run_app.sh`: script will build the docker image and will run a container from that image. It is ideal to validate the container and the application code, running and validating it locally before promoting.
-- `shutdown_app.sh`: stop and remove all containers to clean all the trash generated from multiple executions
-- `deploy_image.sh`: will push the docker image created to the remote registry
 - `create_k8s_resources.sh`: it will create all the kubernetes componentes defined in the `k8s` folder
 - `destroy_k8s_resources.sh`: it will destroy all the kubernetes componentes defined in the `k8s` folder
 - `generate_load.sh`: will emulate a high traffic in the cluster to force the pods to scale according the metrics defined in the `hpa.yaml`
+- `shutdown_app.sh`: stop and remove all containers to clean all the trash generated from multiple executions
 
 ## Execution Order
-To make everything available locally execute the following commands in this order:
-
-In the scripts folder:
-`./scripts/build_and_run_app.sh` and then `./scripts/deploy_image.sh`
+To make everything available locally execute the following commands in this strict order:
 
 In the terraform folder:
-Navigate to: `envs/sandbox`
-Execute: `terragrunt init`, then `terragrunt plan` and finally `terragrunt apply`
-It will make a EKS cluster available in the AWS. This code takes around ~10 to ~15 minutes to finish
+- Navigate to: `envs/sandbox`
+- Execute: `terragrunt init`, then `terragrunt plan` and finally `terragrunt apply`
+- It will make a EKS cluster available in the AWS. This code takes around ~10 to ~15 minutes to finish
 
-In the scripts folder again:
-`./creates_k8s_resources.sh` to create all the kubernetes componentes in the eks cluster provisioned.
-It will make the webapp available in your localhost in the port 8080
+In the scripts folder:
+- Execute: `./scripts/build_and_deploy_image.sh`
+- It will generate the docker image and will upload it to the registry
 
-If you have a Jenkins instance runnning, you can create a Jenkins pipeline with the Jenkinsfile available. The Jenkins file will provide all this steps as automated stages. Terraform should run prior the Jenkins pipeline.
+Still in the scripts folder:
+- Execute: `./creates_k8s_resources.sh`
+- It will create all the kubernetes components in the eks cluster previous provisioned
+- It will make the webapp available in your localhost in the port 8080 by doing a port-forward of the service
+
+If you have a Jenkins instance runnning: 
+- You can create a Jenkins pipeline with the Jenkinsfile available in the `app`folder
+- The Jenkins pipeline will automate all the build and deploy steps
+- Terraform should run prior the Jenkins pipeline anyway
+
+## Improvements
+We need to make the docker registry easier to maintain. Currently, the registry and the repository information are defined in three or four different locations in the code. To replace the current registry and repository we need to find and change all occurrences in the code. 

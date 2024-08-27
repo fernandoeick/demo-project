@@ -4,7 +4,7 @@
 
 IMAGE_NAME="fernandoeick/demo-app-img"
 CONTAINER_NAME="demo-app"
-DOCKERFILE_PATH="../docker/"
+DOCKERFILE_PATH="../app/"
 
 # Building the image
 echo "Building docker image: '$IMAGE_NAME'"
