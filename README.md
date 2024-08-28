@@ -36,7 +36,7 @@ To make everything up and available, execute the following <b>three</b> commands
 - Save the `cluster_endpoint` printed in the output for later usage
 
 2. In the scripts folder:
-- Execute: `./scripts/build_and_deploy_image.sh`
+- Execute: `./build_and_deploy_image.sh`
 - It will generate the docker image and will upload the image to the docker registry
 - <b>Before you run</b>: Make sure to replace the docker registry and repository information as described in the requirements
 
