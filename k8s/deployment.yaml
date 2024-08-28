@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-app-deployment
+  name: demo-app
   labels:
     app: demo-app
 spec:
@@ -20,3 +20,10 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 80
+        resources:
+          requests:
+            memory: "256Mi"    # Memory request
+            cpu: "500m"        # CPU request
+          limits:
+            memory: "512Mi"    # Memory limit
+            cpu: "1"           # CPU limit
