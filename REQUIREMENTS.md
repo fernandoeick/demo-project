@@ -21,7 +21,7 @@ Terragrunt is used to provide abstraction of the terraform. We recommend the usa
 
 ### Kubectl
 For kubernetes resources management, the `kubectl` must be installed and proper configured. Also, you need to ensure you will have access to the EKS cluster that will be provisioned in the AWS account by terraform.
-When the infrastructure is provisioned by the terraform stack, the eks cluster information will be printed in the output. Use that information to configure the proper kubectl context.
+When the infrastructure is provisioned by the terraform stack, the eks cluster information will be printed in the output. Use that information to update your kubeconfig. eg: `aws eks --region us-east-1 update-kubeconfig --name demo-cluster-sandbox`
 
 ### AWS
 You need to have access to an AWS account and the `aws cli` proper configured with a profile and the proper access keys. 

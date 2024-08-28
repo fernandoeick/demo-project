@@ -23,8 +23,8 @@ module "eks" {
     }
   }
   enable_cluster_creator_admin_permissions = true
-  subnet_ids                               = aws_subnet.public[*].id
-  tags                                     = var.tags
-  vpc_id                                   = aws_vpc.default.id
+  subnet_ids = aws_subnet.public[*].id
+  tags       = var.tags
+  vpc_id     = aws_vpc.default.id
 
 }
