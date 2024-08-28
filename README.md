@@ -24,27 +24,28 @@ The `scripts` folder contains some useful scripts:
 - `generate_load.sh`: will emulate a high traffic in the cluster to force the pods to scale according the metrics defined in the `hpa.yaml`
 - `shutdown_app.sh`: stop and remove all containers to clean all the trash generated from multiple executions
 
-## Execution Order
-To make everything available locally execute the following commands in this strict order:
+## How to Run It?
+To make everything up and available, execute the following three commands:
 
-In the terraform folder:
+1. In the terraform folder:
 - Navigate to: `envs/sandbox`
-- Execute: `terragrunt init`, then `terragrunt plan` and finally `terragrunt apply`
+- Execute: `terragrunt init`, then `terragrunt plan` and finally `terragrunt apply`\
+- Make sure the S3 bucket described in the requirements already exists
 - It will make a EKS cluster available in the AWS. This code takes around ~10 to ~15 minutes to finish
+- Save the `cluster_endpoint` printed in the output for later usage
 
-In the scripts folder:
+2. In the scripts folder:
 - Execute: `./scripts/build_and_deploy_image.sh`
 - It will generate the docker image and will upload it to the registry
+- Before you run: Make sure to replace the docker registry and repository information as described in the requirements
 
-Still in the scripts folder:
+3. Still in the scripts folder:
 - Execute: `./creates_k8s_resources.sh`
 - It will create all the kubernetes components in the eks cluster previous provisioned
 - It will make the webapp available in your localhost in the port 8080 by doing a port-forward of the service
+- Before you run: configure your `kubectl context` using the cluster endpoint
 
-If you have a Jenkins instance runnning: 
-- You can create a Jenkins pipeline with the Jenkinsfile available in the `app`folder
+Bonus: If you have a Jenkins instance runnning: 
+- You can create a Jenkins pipeline with the Jenkinsfile available in the `app` folder
 - The Jenkins pipeline will automate all the build and deploy steps
-- Terraform should run prior the Jenkins pipeline anyway
-
-## Improvements
-We need to make the docker registry easier to maintain. Currently, the registry and the repository information are defined in three or four different locations in the code. To replace the current registry and repository we need to find and change all occurrences in the code. 
+- Terraform should run prior the Jenkins pipeline

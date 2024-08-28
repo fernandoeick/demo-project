@@ -2,13 +2,14 @@
 
 ## Build the demo-app and run a container using the latest version of the image.
 
-IMAGE_NAME="fernandoeick/demo-app-img"
+REPOSITORY="fernandoeick"
+IMAGE_NAME="demo-app-img"
 CONTAINER_NAME="demo-app"
 DOCKERFILE_PATH="../app/"
 
 # Building the image
-echo "Building docker image: '$IMAGE_NAME'"
-docker build -t "$IMAGE_NAME" "$DOCKERFILE_PATH"
+echo "Building docker image: '$REPOSITORY/$IMAGE_NAME'"
+docker build -t "$REPOSITORY/$IMAGE_NAME" "$DOCKERFILE_PATH"
 
 if [ $? -ne 0 ]; then
   echo "Error to build the docker image"
@@ -29,7 +30,7 @@ fi
 
 # Starting container and exposing local port
 echo "Starting the new container: '$CONTAINER_NAME'"
-docker run -d -p 8080:80 --name "$CONTAINER_NAME" "$IMAGE_NAME"
+docker run -d -p 8080:80 --name "$CONTAINER_NAME" "$REPOSITORY/$IMAGE_NAME"
 
 # Check if container started successfully
 if [ $? -eq 0 ]; then

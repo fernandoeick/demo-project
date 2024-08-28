@@ -13,9 +13,6 @@ EOF
 }
 
 inputs = {
-  backend_bucket_name = "eickhoff-tf-backend"
-  backend_state_file  = "sandbox/state/sandbox.tfstate"
-
   eks_cluster_name = "demo-cluster"
   eks_version      = "1.30"
   env_name         = "sandbox"
@@ -28,5 +25,15 @@ inputs = {
     environment = "sandbox"
     stack       = "eks"
     terraform   = "true"
+  }
+}
+
+remote_state {
+  backend = "s3"
+  config = {
+    key            = "sandbox/state/sandbox.tfstate"
+    bucket         = "demo-project-backend"
+    region         = "us-east-1"
+    encrypt        = true
   }
 }

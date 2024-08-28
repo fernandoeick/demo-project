@@ -1,13 +1,11 @@
 pipeline {
     agent any
-
     environment {
         DOCKER_REGISTRY = 'docker.io'
         DOCKER_IMAGE = 'demo-app-img'
         DOCKER_TAG = 'latest'
         KUBECONFIG = credentials('kubeconfig-id')
     }
-
     stages {
         stage('Checkout') {
             steps {

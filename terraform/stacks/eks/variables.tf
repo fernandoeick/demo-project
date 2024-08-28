@@ -1,13 +1,3 @@
-variable "backend_bucket_name" {
-  type        = string
-  description = "The name of the S3 bucket for the terraform backend"
-}
-
-variable "backend_state_file" {
-  type        = string
-  description = "The name of the file for the terraform state"
-}
-
 variable "env_name" {
   type        = string
   description = "The name of the environment"
